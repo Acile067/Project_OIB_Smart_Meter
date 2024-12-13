@@ -5,6 +5,7 @@ using System.Security.Principal;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 
 namespace Client
 {
@@ -24,6 +25,22 @@ namespace Client
             using (ClientProxy proxy = new ClientProxy(binding, address))
             {
                 proxy.TestConnection();
+                proxy.CalculateEnergyConsumption("id");
+                Console.ReadLine();
+                
+                proxy.UpdateEnergyConsumed("id", 0);
+                Console.ReadLine();
+                proxy.UpdateId("id1", "id2");
+                Console.ReadLine();
+                proxy.AddSmartMeter(new SmartMeter("","", 0,""));
+                Console.ReadLine();
+                proxy.DeleteSmartMeterById("id");
+                Console.ReadLine();
+                proxy.DeleteDatabase();
+                Console.ReadLine();
+                proxy.BackupDatabase();
+                Console.ReadLine();
+
             }
 
             Console.ReadLine();
