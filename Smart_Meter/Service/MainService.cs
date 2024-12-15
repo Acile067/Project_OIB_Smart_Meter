@@ -30,7 +30,7 @@ namespace Service
 
                 Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
 
-                proksi.TestConnectionMainServiceLoadBalancer();
+                proksi.TestConnectionLoadBalancer();
                 kanal.Close();
             }
             catch { Console.WriteLine("Greska!!"); }

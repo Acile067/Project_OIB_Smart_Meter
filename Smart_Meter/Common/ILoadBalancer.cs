@@ -11,8 +11,8 @@ namespace Common
     public interface ILoadBalancer
     {
         [OperationContract]
-        void TestConnectionMainServiceLoadBalancer();
+        void TestConnectionLoadBalancer();
         [OperationContract]
-        void RegisterWorker();
+        bool RegisterWorker(int port);
     }
 }
