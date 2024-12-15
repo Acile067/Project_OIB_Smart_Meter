@@ -9,12 +9,12 @@ namespace LoadBalancer
 {
     public class LoadBalancerService : ILoadBalancer
     {
-        public void RegisterWorker()
+        public bool RegisterWorker(int port)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
-        public void TestConnectionMainServiceLoadBalancer()
+        public void TestConnectionLoadBalancer()
         {
             Console.WriteLine("Success connected to Load Balancer");
         }
