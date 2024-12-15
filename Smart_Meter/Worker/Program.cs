@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
-using System.Linq;
+using System.Net.Sockets;
+using System.Net;
 using System.Security.Principal;
 using System.ServiceModel;
 
@@ -11,23 +12,40 @@ namespace Worker
         static void Main(string[] args)
         {
             NetTcpBinding binding = new NetTcpBinding();
-            string address = "net.tcp://localhost:0/Worker"; // Dinamički port
+
+            // Dinamički port se dodeljuje pre kreiranja servisa
+            int port = GetFreeTcpPort();
+            string baseAddress = $"net.tcp://localhost:{port}/Worker";
 
             binding.Security.Mode = SecurityMode.Transport;
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
             binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 
-            ServiceHost host = new ServiceHost(typeof(WorkerService));
-            host.AddServiceEndpoint(typeof(IWorker), binding, address);
+            // Kreiraj ServiceHost sa ručno generisanom baznom adresom
+            ServiceHost host = new ServiceHost(typeof(WorkerService), new Uri(baseAddress));
 
-            // Otvori servis pre nego što tražiš adresu
+            // Dodaj endpoint
+            host.AddServiceEndpoint(typeof(IWorker), binding, "");
+
+            // Otvori servis
             host.Open();
 
             Console.WriteLine("User - Worker: " + WindowsIdentity.GetCurrent().Name);
             Console.WriteLine("Worker is running.");
+            Console.WriteLine($"Assigned port: {port}");
 
             Console.ReadLine();
             host.Close();
+        }
+
+        // Funkcija za dobijanje slobodnog porta
+        private static int GetFreeTcpPort()
+        {
+            TcpListener listener = new TcpListener(IPAddress.Loopback, 0);
+            listener.Start();
+            int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            listener.Stop();
+            return port;
         }
     }
 }
