@@ -13,7 +13,7 @@ namespace Common
         [OperationContract]
         void TestConnectionLoadBalancer();
         [OperationContract]
-        bool RegisterWorker(int port);
+        bool RegisterWorker(int port, string workerName);
         [OperationContract]
         bool RemoveWorker(int port);
     }

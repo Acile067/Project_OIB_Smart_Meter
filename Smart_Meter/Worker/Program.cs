@@ -40,13 +40,14 @@ namespace Worker
             try
             {
                 host.Open();
-                
-                Console.WriteLine("User - Worker: " + WindowsIdentity.GetCurrent().Name);
+                var name = WindowsIdentity.GetCurrent().Name;
+                string workerName = name.Substring(name.LastIndexOf('\\') + 1);
+                Console.WriteLine("User - Worker: " + name);
                 Console.WriteLine("Worker is running.");
                 Console.WriteLine($"Assigned port: {port}");
 
                 workerProxy = CreateWorkerProxy();
-                bool ret = workerProxy.RegisterWorker(port);
+                bool ret = workerProxy.RegisterWorker(port, workerName);
                 if(ret)
                 {
                     Console.WriteLine("Succesfuly registered to Load Balancer.");

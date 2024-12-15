@@ -16,12 +16,12 @@ namespace Worker
         {
             factory = this.CreateChannel();
         }
-        public bool RegisterWorker(int port)
+        public bool RegisterWorker(int port, string workerName)
         {
             bool ret = false;
             try
             {
-                ret = factory.RegisterWorker(port);
+                ret = factory.RegisterWorker(port, workerName);
             }
             catch (Exception e)
             {
