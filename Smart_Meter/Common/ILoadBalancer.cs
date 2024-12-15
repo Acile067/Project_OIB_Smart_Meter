@@ -14,5 +14,7 @@ namespace Common
         void TestConnectionLoadBalancer();
         [OperationContract]
         bool RegisterWorker(int port);
+        [OperationContract]
+        bool RemoveWorker(int port);
     }
 }

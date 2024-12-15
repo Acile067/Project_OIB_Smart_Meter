@@ -14,6 +14,11 @@ namespace LoadBalancer
             return true;
         }
 
+        public bool RemoveWorker(int port)
+        {
+            return true;
+        }
+
         public void TestConnectionLoadBalancer()
         {
             Console.WriteLine("Success connected to Load Balancer");

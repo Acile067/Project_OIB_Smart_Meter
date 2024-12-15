@@ -42,6 +42,20 @@ namespace Worker
                 Console.WriteLine("[TestConnectionLoadBalancer] ERROR = {0}", e.Message);
             }
         }
+        public bool RemoveWorker(int port)
+        {
+            bool ret = false;
+            try
+            {
+                ret = factory.RemoveWorker(port);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[RegisterWorker] ERROR = {0}", e.Message);
+            }
+
+            return ret;
+        }
         public void Dispose()
         {
             if (factory != null)
@@ -51,5 +65,7 @@ namespace Worker
 
             this.Close();
         }
+
+        
     }
 }

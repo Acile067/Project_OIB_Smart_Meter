@@ -40,7 +40,7 @@ namespace Worker
             try
             {
                 host.Open();
-
+                
                 Console.WriteLine("User - Worker: " + WindowsIdentity.GetCurrent().Name);
                 Console.WriteLine("Worker is running.");
                 Console.WriteLine($"Assigned port: {port}");
@@ -62,7 +62,8 @@ namespace Worker
             finally
             {
                 host.Close();
-                //TODO Dodati da se worker izbaci iz recnika
+                workerProxy.RemoveWorker(port);
+                workerProxy.Close();
                 workerProxy.Dispose();
             }
         }
