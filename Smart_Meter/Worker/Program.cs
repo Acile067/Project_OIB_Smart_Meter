@@ -41,16 +41,15 @@ namespace Worker
             {
                 host.Open();
                 var name = WindowsIdentity.GetCurrent().Name;
-                string workerName = name.Substring(name.LastIndexOf('\\') + 1);
-                Console.WriteLine("User - Worker: " + name);
-                Console.WriteLine("Worker is running.");
-                Console.WriteLine($"Assigned port: {port}");
+                Console.WriteLine("[INFO] User - Worker: " + name);
+                Console.WriteLine("[INFO] Worker is running.");
+                Console.WriteLine($"[INFO] Assigned port: {port}");
 
                 workerProxy = CreateWorkerProxy();
-                bool ret = workerProxy.RegisterWorker(port, workerName);
+                bool ret = workerProxy.RegisterWorker(port, srvCertCN); //56732, Worker1
                 if(ret)
                 {
-                    Console.WriteLine("Succesfuly registered to Load Balancer.");
+                    Console.WriteLine("[INFO] Succesfuly registered to Load Balancer.");
                 }
 
                 Console.ReadLine();

@@ -1,8 +1,11 @@
 ﻿using Common;
+using Manager.Certificates;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +14,7 @@ namespace LoadBalancer
     public class LoadBalancerService : ILoadBalancer
     {
         public static ConcurrentDictionary<int, string> WorkerPortDict = new ConcurrentDictionary<int, string>();
+        private static int lastWorker = -1;
 
         public bool RegisterWorker(int port, string workerName)
         {
@@ -48,7 +52,47 @@ namespace LoadBalancer
 
         public void TestConnectionLoadBalancer()
         {
-            Console.WriteLine("Success connected to Load Balancer");
+            Console.WriteLine("[INFO] Successfuly connected to Load Balancer");
+
+            if(WorkerPortDict.Count > 0)
+            {
+                lastWorker = (lastWorker+1)% (WorkerPortDict.Count);
+            }
+            else
+            {
+                lastWorker = -1;
+            }
+
+            if (WorkerPortDict.Count > 0) 
+            {
+                int i = 0;
+                foreach (int workerPort in WorkerPortDict.Keys)
+                {
+                    if(i == lastWorker)
+                    {
+                        string srvCertCN = WorkerPortDict[workerPort];
+                        Console.WriteLine("[INFO] Request sent to: " + srvCertCN);
+
+                        NetTcpBinding binding = new NetTcpBinding();
+                        binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
+
+                        X509Certificate2 srvCert = CertManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, srvCertCN);
+                        EndpointAddress address = new EndpointAddress(new Uri($"net.tcp://localhost:{workerPort}/Worker"),
+                                                  new X509CertificateEndpointIdentity(srvCert));
+
+                        using(LoadBalancerProxy proxy = new LoadBalancerProxy(binding, address))
+                        {
+                            proxy.TestCommunicationWorker();
+                            Console.WriteLine("[INFO] TestCommunication() finished.");
+                        }
+                    }
+                    i++;
+                }
+            }
+            else
+            {
+                Console.WriteLine("[INFO] No Workes To Do Job");
+            }
         }
     }
 }

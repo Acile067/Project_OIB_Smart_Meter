@@ -64,8 +64,6 @@ namespace Worker
             }
 
             this.Close();
-        }
-
-        
+        }       
     }
 }
