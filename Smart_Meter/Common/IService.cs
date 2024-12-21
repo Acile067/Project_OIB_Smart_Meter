@@ -13,7 +13,7 @@ namespace Common
         [OperationContract]
         void TestConnection();
         [OperationContract]
-        double CalculateEnergyConsumption(string meterId);
+        double CalculateEnergyConsumption(byte[] encryptedId);
 
         [OperationContract]
         bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed);

@@ -1,16 +1,21 @@
 ﻿using Common;
+using Manager;
+using Manager.AES;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Permissions;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Service
 {
     public class MainService : IService
     {
+
         public void TestConnection()
         {
             try
@@ -32,13 +37,16 @@ namespace Service
 
                 proksi.TestConnectionLoadBalancer();
                 kanal.Close();
+
+                
             }
             catch { Console.WriteLine("Greska!!"); }
         }
         
-        public double CalculateEnergyConsumption(string meterId)
+        public double CalculateEnergyConsumption(byte[] encryptedId)
         {
-            //TO DO
+            string meterId=DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName()+".txt"), encryptedId));
+            Console.WriteLine("ODGOvooooooooooooooor: " + meterId);
             return 0;
         }
         [PrincipalPermission(SecurityAction.Demand, Role = "ModifyEnergy")]
@@ -72,9 +80,13 @@ namespace Service
             return;
         }
 
-  
 
-        
+        public static string GetUserName()
+        {
+            IIdentity identity = Thread.CurrentPrincipal.Identity;
+            WindowsIdentity windowsIdentity = identity as WindowsIdentity;
+            return Formatter.ParseName(windowsIdentity.Name);
+        }
 
         
     }

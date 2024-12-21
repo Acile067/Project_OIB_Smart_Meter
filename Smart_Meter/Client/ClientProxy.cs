@@ -1,7 +1,9 @@
 ﻿using Common;
+using Manager.AES;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +13,12 @@ namespace Client
     public class ClientProxy : ChannelFactory<IService>, IService, IDisposable
     {
         IService factory;
+        
 
         public ClientProxy(NetTcpBinding binding, string address) : base(binding, address)
         {
             factory = this.CreateChannel();
+            
         }
 
         public void TestConnection()
@@ -29,12 +33,14 @@ namespace Client
             }
         }
 
-        public double CalculateEnergyConsumption(string meterId)
+        public double CalculateEnergyConsumption(byte[] encryptedId)
         {
             double energyConsumption = 0;
             try
             {
-                energyConsumption = factory.CalculateEnergyConsumption(meterId);
+                Console.WriteLine(encryptedId.ToString());
+                Console.ReadLine();
+                energyConsumption = factory.CalculateEnergyConsumption(encryptedId);
                 Console.WriteLine("CalculateEnergyConsuption allowed!");
             }catch(Exception e)
             {
@@ -138,5 +144,7 @@ namespace Client
 
             this.Close();
         }
+
+
     }
 }
