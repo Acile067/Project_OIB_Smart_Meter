@@ -9,6 +9,7 @@ using System.ServiceModel;
 using Manager;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace LoadBalancer
 {
@@ -33,27 +34,72 @@ namespace LoadBalancer
 
         public bool AddSmartMeter(SmartMeter meter)
         {
-            throw new NotImplementedException();
+            bool ret = false;
+            try
+            {
+                ret = factory.AddSmartMeter(meter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[AddSmartMeter] ERROR = {0}", e.Message);
+            }
+
+            return ret;
+            
         }
 
         public void BackupDatabase()
         {
-            throw new NotImplementedException();
+            try
+            {
+                factory.BackupDatabase();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[BackupDatabase] ERROR = {0}", e.Message);
+            }
         }
 
         public double CalculateEnergyConsumption(string meterId)
         {
-            throw new NotImplementedException();
+            double ret = -1;
+            try
+            {
+                ret = factory.CalculateEnergyConsumption(meterId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[CalculateEnergyConsumption] ERROR = {0}", e.Message);
+            }
+
+            return ret;
         }
 
         public void DeleteDatabase()
         {
-            throw new NotImplementedException();
+            try
+            {
+                factory.BackupDatabase();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[DeleteDatabase] ERROR = {0}", e.Message);
+            }
         }
 
         public bool DeleteSmartMeterById(string meterId)
         {
-            throw new NotImplementedException();
+            bool ret = false;
+            try
+            {
+                ret = factory.DeleteSmartMeterById(meterId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[DeleteSmartMeterById] ERROR = {0}", e.Message);
+            }
+
+            return ret;
         }
 
         public void TestCommunicationWorker()
@@ -70,12 +116,32 @@ namespace LoadBalancer
 
         public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
         {
-            throw new NotImplementedException();
+            bool ret = false;
+            try
+            {
+                ret = factory.UpdateEnergyConsumed(meterId, newEnergyConsumed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[UpdateEnergyConsumed] ERROR = {0}", e.Message);
+            }
+
+            return ret;
         }
 
         public bool UpdateId(string meterId, string newId)
         {
-            throw new NotImplementedException();
+            bool ret = false;
+            try
+            {
+                ret = factory.UpdateId(meterId, newId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[UpdateId] ERROR = {0}", e.Message);
+            }
+
+            return ret;
         }
     }
 }
