@@ -16,5 +16,19 @@ namespace Common
         bool RegisterWorker(int port, string workerName);
         [OperationContract]
         bool RemoveWorker(int port);
+        [OperationContract]
+        double CalculateEnergyConsumption(string meterId);
+        [OperationContract]
+        bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed);
+        [OperationContract]
+        bool UpdateId(string meterId, string newId);
+        [OperationContract]
+        bool AddSmartMeter(SmartMeter meter);
+        [OperationContract]
+        bool DeleteSmartMeterById(string meterId);
+        [OperationContract]
+        void DeleteDatabase();
+        [OperationContract]
+        void BackupDatabase();
     }
 }

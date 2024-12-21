@@ -64,6 +64,41 @@ namespace Worker
             }
 
             this.Close();
-        }       
+        }
+
+        public double CalculateEnergyConsumption(string meterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateId(string meterId, string newId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddSmartMeter(SmartMeter meter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteSmartMeterById(string meterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void BackupDatabase()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
