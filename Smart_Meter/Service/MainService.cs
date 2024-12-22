@@ -4,6 +4,7 @@ using Manager.AES;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.ServiceModel;
@@ -42,6 +43,7 @@ namespace Service
             }
             catch { Console.WriteLine("Greska!!"); }
         }
+
         
         public double CalculateEnergyConsumption(byte[] encryptedId)
         {
@@ -52,34 +54,67 @@ namespace Service
             //TO DO
             return 0;
         }
+
+
         [PrincipalPermission(SecurityAction.Demand, Role = "ModifyEnergy")]
-        public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
+        public bool UpdateEnergyConsumed(byte[] meterId, byte[] newEnergyConsumed)
         {
+            string id=DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
+            double energyConsumed = DataConverter.BytesToDouble(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), newEnergyConsumed));
+
+            //TO DO
             return true;
+            
         }
+
+
         [PrincipalPermission(SecurityAction.Demand, Role = "ModifyId")]
-        public bool UpdateId(string meterId, string newId)
+        public bool UpdateId(byte[] meterId, byte[] newId)
         {
+            string id1 = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
+            string id2 = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), newId));
+
+            //TO DO
             return true;
         }
+
+
         [PrincipalPermission(SecurityAction.Demand, Role = "AddEntity")]
-        public bool AddSmartMeter(SmartMeter meter)
+        public bool AddSmartMeter(byte[] id, byte[] name, byte[] energy)
         {
+            string newId = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), id));
+            string newName = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), name));
+            double newEnergy = DataConverter.BytesToDouble(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), energy));
+
+            SmartMeter meter=new SmartMeter(newId, newName, newEnergy, "");
+            
+            //TO DO
             return true;
         }
+
+
         [PrincipalPermission(SecurityAction.Demand, Role = "DeleteEntity")]
-        public bool DeleteSmartMeterById(string meterId)
+        public bool DeleteSmartMeterById(byte[] meterId)
         {
+            string id = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
+
+            //TO DO
             return true;
         }
+
+
         [PrincipalPermission(SecurityAction.Demand, Role = "DeleteDatabase")]
         public void DeleteDatabase()
         {
+            //TO DO
             return;
         }
+
+
         [PrincipalPermission(SecurityAction.Demand, Role = "ArchiveDatabase")]
         public void BackupDatabase()
         {
+            //TO DO
             return;
         }
 

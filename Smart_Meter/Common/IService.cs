@@ -16,13 +16,13 @@ namespace Common
         double CalculateEnergyConsumption(byte[] encryptedId);
 
         [OperationContract]
-        bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed);
+        bool UpdateEnergyConsumed(byte[] meterId, byte[] newEnergyConsumed);
         [OperationContract]
-        bool UpdateId(string meterId, string newId);
+        bool UpdateId(byte[] meterId, byte[] newId);
         [OperationContract]
-        bool AddSmartMeter(SmartMeter meter);
+        bool AddSmartMeter(byte[] id, byte[] name, byte[] energy);
         [OperationContract]
-        bool DeleteSmartMeterById(string meterId);
+        bool DeleteSmartMeterById(byte[] meterId);
         [OperationContract]
         void DeleteDatabase();
         [OperationContract]

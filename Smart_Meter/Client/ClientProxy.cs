@@ -47,7 +47,7 @@ namespace Client
             return energyConsumption; //vrati rezultat
         }
 
-        public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
+        public bool UpdateEnergyConsumed(byte[] meterId, byte[] newEnergyConsumed)
         {
             bool updated = false;
             try
@@ -63,7 +63,7 @@ namespace Client
         }
 
 
-        public bool UpdateId(string meterId, string newId)
+        public bool UpdateId(byte[] meterId, byte[] newId)
         {
             bool updated = false;
             try
@@ -78,12 +78,12 @@ namespace Client
             return updated; 
         }
 
-        public bool AddSmartMeter(SmartMeter meter)
+        public bool AddSmartMeter(byte[] id, byte[]name, byte[]energy)
         {
             bool added = false;
             try
             {
-                added = factory.AddSmartMeter(meter);
+                added = factory.AddSmartMeter(id, name, energy);
                 Console.WriteLine("AddSmartMeter allowed!");
             }
             catch(Exception e)
@@ -92,7 +92,7 @@ namespace Client
             }
             return added;
         }
-        public bool DeleteSmartMeterById(string meterId)
+        public bool DeleteSmartMeterById(byte[] meterId)
         {
             bool deleted = false;
             try
