@@ -27,12 +27,13 @@ namespace Manager.AES
                 using (CryptoStream cryptoStream = new CryptoStream(memoryStream, aesEncryptTransform, CryptoStreamMode.Write))
                 {
                     cryptoStream.Write(data, 0, data.Length);
+                    cryptoStream.FlushFinalBlock();
                     encryptedData = memoryStream.ToArray();
                 }
             }
-
-            return encryptedData;
             
+            return encryptedData;
+   
         }
 
         public static byte[] DecryptData(string secretKey, byte[] encryptedData)
@@ -41,9 +42,10 @@ namespace Manager.AES
 
             AesCryptoServiceProvider aesCryptoProvider = new AesCryptoServiceProvider
             {
+               
                 Key = ASCIIEncoding.ASCII.GetBytes(secretKey),
                 Mode = CipherMode.ECB,
-                Padding = PaddingMode.None
+                Padding = PaddingMode.PKCS7
             };
 
             ICryptoTransform aesDecryptTransform = aesCryptoProvider.CreateDecryptor();

@@ -25,10 +25,11 @@ namespace Client
 
             Console.WriteLine("User - Client : " + WindowsIdentity.GetCurrent().Name);
 
-            string eSecretKey = SecretKey.GenerateKey();
             string userName = Manager.Formatter.ParseName(WindowsIdentity.GetCurrent().Name);
-         
             string fileName = userName + ".txt";
+            DeleteFile(fileName);  //ako je program zatvoren sa CTRL+C ili X ne obrise se fajl
+
+            string eSecretKey = SecretKey.GenerateKey();
             SecretKey.StoreKey(eSecretKey, fileName);
 
             using (ClientProxy proxy = new ClientProxy(binding, address))
@@ -42,22 +43,14 @@ namespace Client
                     {
                         case 1:
                             Console.Write("Enter smart meter ID: ");
-                            string meterId;
-                            do
-                            {
-                                meterId = Console.ReadLine();
-
-                            } while (!IsValidId(meterId));
-                            byte[] test = DataConverter.StringToBytes(meterId);
-                            Console.WriteLine(test);
-                            //byte[] encryptedId = AES_Symm_Algorithm.EncryptData(eSecretKey, DataConverter.StringToBytes(meterId));
-
-                            //proxy.CalculateEnergyConsumption(encryptedId);
+                            string meterId=InputId();
+                            byte[] encryptedId = AES_Symm_Algorithm.EncryptData(eSecretKey, DataConverter.StringToBytes(meterId));
+                            proxy.CalculateEnergyConsumption(encryptedId);
                             break;
 
                         case 2:
                             Console.Write("Enter smart meter ID: ");
-                            string idToUpdate = Console.ReadLine();
+                            string idToUpdate = InputId();
                             Console.Write("Enter new energy consumed value: ");
                             double newEnergy = double.Parse(Console.ReadLine());
                             proxy.UpdateEnergyConsumed(idToUpdate, newEnergy);
@@ -97,11 +90,7 @@ namespace Client
                             break;
 
                         default:
-                            
-                            if (File.Exists("../../../KEYS/"+fileName))
-                            {
-                                File.Delete("../../../KEYS/"+fileName);
-                            }
+                            DeleteFile(fileName);
                             Console.WriteLine("Exiting program...");
                             break;
 
@@ -153,6 +142,29 @@ namespace Client
 
             return true;
         }
+
+        static string InputId()
+        {
+            string meterId = null;
+            do
+            {
+                meterId = Console.ReadLine();
+
+            } while (!IsValidId(meterId));
+            return meterId;
+        }
+
+
+        static void DeleteFile(string fileName)
+        {
+            if (File.Exists("../../../Keys/" + fileName))
+            {
+                File.Delete("../../../Keys/" + fileName);
+            }
+            
+        }
+
+        
 
     }
 }

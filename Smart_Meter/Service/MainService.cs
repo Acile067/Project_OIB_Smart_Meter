@@ -45,8 +45,11 @@ namespace Service
         
         public double CalculateEnergyConsumption(byte[] encryptedId)
         {
-            string meterId=DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName()+".txt"), encryptedId));
-            Console.WriteLine("ODGOvooooooooooooooor: " + meterId);
+            string secretKey = SecretKey.LoadKey(GetUserName() + ".txt");
+            byte[] decriptedId= AES_Symm_Algorithm.DecryptData(secretKey, encryptedId);
+            string meterId=DataConverter.BytesToString(decriptedId);
+            
+            //TO DO
             return 0;
         }
         [PrincipalPermission(SecurityAction.Demand, Role = "ModifyEnergy")]

@@ -26,7 +26,7 @@ namespace Manager.AES
         /// <param name="outFile"> file location to store a secret key </param>
         public static void StoreKey(string secretKey, string outFile)
         {
-            string outFilePath = "../../../KEYS/" + outFile;
+            string outFilePath = "../../../Keys/" + outFile;
             FileStream fOutput = new FileStream(outFilePath, FileMode.OpenOrCreate, FileAccess.Write);
             byte[] buffer = Encoding.ASCII.GetBytes(secretKey);
 
@@ -55,8 +55,9 @@ namespace Manager.AES
         /// <returns> a secret key value </returns>
         public static string LoadKey(string inFile)
         {
-            string inFilePath = "../../../KEYS/" + inFile;
-            FileStream fInput = new FileStream(inFile, FileMode.Open, FileAccess.Read);
+
+            string inFilePath = "../../../Keys/" + inFile;
+            FileStream fInput = new FileStream(inFilePath, FileMode.Open, FileAccess.Read);
             byte[] buffer = new byte[(int)fInput.Length];
 
             try
@@ -73,6 +74,9 @@ namespace Manager.AES
             }
 
             return ASCIIEncoding.ASCII.GetString(buffer);
+
+
+
         }
 
         #endregion

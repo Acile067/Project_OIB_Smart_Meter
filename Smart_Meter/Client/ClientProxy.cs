@@ -38,8 +38,6 @@ namespace Client
             double energyConsumption = 0;
             try
             {
-                Console.WriteLine(encryptedId.ToString());
-                Console.ReadLine();
                 energyConsumption = factory.CalculateEnergyConsumption(encryptedId);
                 Console.WriteLine("CalculateEnergyConsuption allowed!");
             }catch(Exception e)
