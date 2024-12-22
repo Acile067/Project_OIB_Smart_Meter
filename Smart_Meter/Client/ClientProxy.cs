@@ -1,7 +1,9 @@
 ﻿using Common;
+using Manager.AES;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +13,12 @@ namespace Client
     public class ClientProxy : ChannelFactory<IService>, IService, IDisposable
     {
         IService factory;
+        
 
         public ClientProxy(NetTcpBinding binding, string address) : base(binding, address)
         {
             factory = this.CreateChannel();
+            
         }
 
         public void TestConnection()
@@ -29,12 +33,12 @@ namespace Client
             }
         }
 
-        public double CalculateEnergyConsumption(string meterId)
+        public double CalculateEnergyConsumption(byte[] encryptedId)
         {
             double energyConsumption = 0;
             try
             {
-                energyConsumption = factory.CalculateEnergyConsumption(meterId);
+                energyConsumption = factory.CalculateEnergyConsumption(encryptedId);
                 Console.WriteLine("CalculateEnergyConsuption allowed!");
             }catch(Exception e)
             {
@@ -43,7 +47,7 @@ namespace Client
             return energyConsumption; //vrati rezultat
         }
 
-        public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
+        public bool UpdateEnergyConsumed(byte[] meterId, byte[] newEnergyConsumed)
         {
             bool updated = false;
             try
@@ -59,7 +63,7 @@ namespace Client
         }
 
 
-        public bool UpdateId(string meterId, string newId)
+        public bool UpdateId(byte[] meterId, byte[] newId)
         {
             bool updated = false;
             try
@@ -74,12 +78,12 @@ namespace Client
             return updated; 
         }
 
-        public bool AddSmartMeter(SmartMeter meter)
+        public bool AddSmartMeter(byte[] id, byte[]name, byte[]energy)
         {
             bool added = false;
             try
             {
-                added = factory.AddSmartMeter(meter);
+                added = factory.AddSmartMeter(id, name, energy);
                 Console.WriteLine("AddSmartMeter allowed!");
             }
             catch(Exception e)
@@ -88,7 +92,7 @@ namespace Client
             }
             return added;
         }
-        public bool DeleteSmartMeterById(string meterId)
+        public bool DeleteSmartMeterById(byte[] meterId)
         {
             bool deleted = false;
             try
@@ -138,5 +142,7 @@ namespace Client
 
             this.Close();
         }
+
+
     }
 }

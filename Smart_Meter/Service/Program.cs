@@ -40,6 +40,8 @@ namespace Service
             Console.WriteLine("User - MainService: " + WindowsIdentity.GetCurrent().Name);
 
             Console.WriteLine("MainService is running.");
+            
+            
 
             Console.ReadLine();
             host.Close();
