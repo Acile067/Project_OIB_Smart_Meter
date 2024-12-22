@@ -25,9 +25,9 @@ namespace LoadBalancer
 
             host.Open();
 
-            Console.WriteLine("User - Load Blancer :" + WindowsIdentity.GetCurrent().Name);
+            Console.WriteLine("[INFO] User - Load Blancer :" + WindowsIdentity.GetCurrent().Name);
 
-            Console.WriteLine("Load Balancer is running.");
+            Console.WriteLine("[INFO] Load Balancer is running.");
 
             Console.ReadLine();
             host.Close();

@@ -16,12 +16,12 @@ namespace Worker
         {
             factory = this.CreateChannel();
         }
-        public bool RegisterWorker(int port)
+        public bool RegisterWorker(int port, string workerName)
         {
             bool ret = false;
             try
             {
-                ret = factory.RegisterWorker(port);
+                ret = factory.RegisterWorker(port, workerName);
             }
             catch (Exception e)
             {
@@ -42,6 +42,20 @@ namespace Worker
                 Console.WriteLine("[TestConnectionLoadBalancer] ERROR = {0}", e.Message);
             }
         }
+        public bool RemoveWorker(int port)
+        {
+            bool ret = false;
+            try
+            {
+                ret = factory.RemoveWorker(port);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[RegisterWorker] ERROR = {0}", e.Message);
+            }
+
+            return ret;
+        }
         public void Dispose()
         {
             if (factory != null)
@@ -50,6 +64,41 @@ namespace Worker
             }
 
             this.Close();
+        }
+
+        public double CalculateEnergyConsumption(string meterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateId(string meterId, string newId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddSmartMeter(SmartMeter meter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteSmartMeterById(string meterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void BackupDatabase()
+        {
+            throw new NotImplementedException();
         }
     }
 }

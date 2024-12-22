@@ -40,16 +40,16 @@ namespace Worker
             try
             {
                 host.Open();
-
-                Console.WriteLine("User - Worker: " + WindowsIdentity.GetCurrent().Name);
-                Console.WriteLine("Worker is running.");
-                Console.WriteLine($"Assigned port: {port}");
+                var name = WindowsIdentity.GetCurrent().Name;
+                Console.WriteLine("[INFO] User - Worker: " + name);
+                Console.WriteLine("[INFO] Worker is running.");
+                Console.WriteLine($"[INFO] Assigned port: {port}");
 
                 workerProxy = CreateWorkerProxy();
-                bool ret = workerProxy.RegisterWorker(port);
+                bool ret = workerProxy.RegisterWorker(port, srvCertCN); //56732, Worker1
                 if(ret)
                 {
-                    Console.WriteLine("Succesfuly registered to Load Balancer.");
+                    Console.WriteLine("[INFO] Succesfuly registered to Load Balancer.");
                 }
 
                 Console.ReadLine();
@@ -62,7 +62,8 @@ namespace Worker
             finally
             {
                 host.Close();
-                //TODO Dodati da se worker izbaci iz recnika
+                workerProxy.RemoveWorker(port);
+                workerProxy.Close();
                 workerProxy.Dispose();
             }
         }
