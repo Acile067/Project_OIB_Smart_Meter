@@ -21,6 +21,7 @@ namespace Worker
                 Console.WriteLine("[INFO] Static constructor called.");
                 EnsureDatabaseFolderExists();
                 LoadDatabase();
+                Console.WriteLine("[INFO] Initialization completed successfully.");
             }
             catch (Exception ex)
             {
@@ -34,6 +35,7 @@ namespace Worker
         {
             if (!Directory.Exists(DatabaseFolderPath))
             {
+                Console.WriteLine("[INFO] Creating database folder.");
                 Directory.CreateDirectory(DatabaseFolderPath);
             }
         }
@@ -44,11 +46,29 @@ namespace Worker
             {
                 if (File.Exists(DatabaseFilePath))
                 {
+                    Console.WriteLine("[INFO] Loading database from file.");
                     var json = File.ReadAllText(DatabaseFilePath);
                     meters = JsonSerializer.Deserialize<Dictionary<string, SmartMeter>>(json) ?? new Dictionary<string, SmartMeter>();
+
+                    // Čišćenje podataka
+                    foreach (var key in new List<string>(meters.Keys))
+                    {
+                        var meter = meters[key];
+                        meter.MeterId = meter.MeterId.TrimEnd('\0');
+                        meter.OwnerName = meter.OwnerName.TrimEnd('\0');
+
+                        // Zamenjujemo ključ ako je obrisano '\0'
+                        if (key != meter.MeterId)
+                        {
+                            meters.Remove(key);
+                            meters[meter.MeterId] = meter;
+                        }
+                    }
+                    Console.WriteLine("[INFO] Database loaded successfully.");
                 }
                 else
                 {
+                    Console.WriteLine("[DEBUG] Database file does not exist, initializing new database.");
                     meters = new Dictionary<string, SmartMeter>();
                 }
             }
@@ -58,8 +78,16 @@ namespace Worker
         {
             lock (fileLock)
             {
-                var json = JsonSerializer.Serialize(meters);
-                File.WriteAllText(DatabaseFilePath, json);
+                try
+                {
+                    var json = JsonSerializer.Serialize(meters);
+                    File.WriteAllText(DatabaseFilePath, json);
+                    Console.WriteLine("[INFO] Database saved successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[ERROR] Failed to save database: " + ex.Message);
+                }
             }
         }
 
@@ -67,9 +95,18 @@ namespace Worker
         {
             lock (fileLock)
             {
-                if (meters.ContainsKey(meter.MeterId)) return false;
+                meter.MeterId = meter.MeterId.TrimEnd('\0');
+                meter.OwnerName = meter.OwnerName.TrimEnd('\0');
+
+                if (meters.ContainsKey(meter.MeterId))
+                {
+                    Console.WriteLine($"[ERROR] MeterId '{meter.MeterId}' already exists in the database.");
+                    return false;
+                }
+
                 meters[meter.MeterId] = meter;
                 SaveDatabase();
+                Console.WriteLine($"[INFO] MeterId '{meter.MeterId}' successfully added to the database.");
                 return true;
             }
         }
@@ -78,8 +115,16 @@ namespace Worker
         {
             lock (fileLock)
             {
-                string archiveFilePath = Path.Combine(DatabaseFolderPath, $"archive_{DateTime.Now:yyyyMMddHHmmss}.json");
-                File.Copy(DatabaseFilePath, archiveFilePath, overwrite: true);
+                try
+                {
+                    string archiveFilePath = Path.Combine(DatabaseFolderPath, $"archive_{DateTime.Now:yyyyMMddHHmmss}.json");
+                    File.Copy(DatabaseFilePath, archiveFilePath, overwrite: true);
+                    Console.WriteLine($"[INFO] Database backup created at '{archiveFilePath}'.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[ERROR] Failed to backup database: " + ex.Message);
+                }
             }
         }
 
@@ -87,7 +132,10 @@ namespace Worker
         {
             lock (fileLock)
             {
-                return meters.TryGetValue(meterId, out var meter) ? meter.EnergyConsumed : 0.0;
+                string cleanMeterId = meterId.TrimEnd('\0');
+                Console.WriteLine($"[DEBUG] Calculating energy consumption for MeterId: '{cleanMeterId}'.");
+
+                return meters.TryGetValue(cleanMeterId, out var meter) ? meter.EnergyConsumed : 0.0;
             }
         }
 
@@ -97,9 +145,11 @@ namespace Worker
             {
                 if (File.Exists(DatabaseFilePath))
                 {
+                    Console.WriteLine("[INFO] Deleting database file.");
                     File.Delete(DatabaseFilePath);
-                    meters.Clear();
                 }
+                meters.Clear();
+                Console.WriteLine("[INFO] Database cleared.");
             }
         }
 
@@ -107,24 +157,43 @@ namespace Worker
         {
             lock (fileLock)
             {
-                if (!meters.Remove(meterId)) return false;
+                string cleanMeterId = meterId.TrimEnd('\0');
+                Console.WriteLine($"[DEBUG] Attempting to delete MeterId: '{cleanMeterId}'.");
+
+                if (!meters.ContainsKey(cleanMeterId))
+                {
+                    Console.WriteLine($"[ERROR] MeterId '{cleanMeterId}' not found in database.");
+                    return false;
+                }
+
+                meters.Remove(cleanMeterId);
                 SaveDatabase();
+                Console.WriteLine($"[INFO] MeterId '{cleanMeterId}' successfully deleted.");
                 return true;
             }
         }
 
         public void TestCommunicationWorker()
         {
-            Console.WriteLine("[INFO] Successfuly connected to Worker");
+            Console.WriteLine("[INFO] Successfully connected to Worker.");
         }
 
         public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
         {
             lock (fileLock)
             {
-                if (!meters.ContainsKey(meterId)) return false;
-                meters[meterId].EnergyConsumed = newEnergyConsumed;
+                string cleanMeterId = meterId.TrimEnd('\0');
+                Console.WriteLine($"[DEBUG] Updating energy consumed for MeterId: '{cleanMeterId}'.");
+
+                if (!meters.ContainsKey(cleanMeterId))
+                {
+                    Console.WriteLine($"[ERROR] MeterId '{cleanMeterId}' not found in database.");
+                    return false;
+                }
+
+                meters[cleanMeterId].EnergyConsumed = newEnergyConsumed;
                 SaveDatabase();
+                Console.WriteLine($"[INFO] Energy consumption for MeterId '{cleanMeterId}' successfully updated.");
                 return true;
             }
         }
@@ -133,12 +202,22 @@ namespace Worker
         {
             lock (fileLock)
             {
-                if (!meters.ContainsKey(meterId) || meters.ContainsKey(newId)) return false;
-                var meter = meters[meterId];
-                meters.Remove(meterId);
-                meter.MeterId = newId;
-                meters[newId] = meter;
+                string cleanMeterId = meterId.TrimEnd('\0');
+                string cleanNewId = newId.TrimEnd('\0');
+                Console.WriteLine($"[DEBUG] Updating MeterId '{cleanMeterId}' to '{cleanNewId}'.");
+
+                if (!meters.ContainsKey(cleanMeterId) || meters.ContainsKey(cleanNewId))
+                {
+                    Console.WriteLine($"[ERROR] Update failed. Either MeterId '{cleanMeterId}' does not exist or newId '{cleanNewId}' already exists.");
+                    return false;
+                }
+
+                var meter = meters[cleanMeterId];
+                meters.Remove(cleanMeterId);
+                meter.MeterId = cleanNewId;
+                meters[cleanNewId] = meter;
                 SaveDatabase();
+                Console.WriteLine($"[INFO] MeterId '{cleanMeterId}' successfully updated to '{cleanNewId}'.");
                 return true;
             }
         }
