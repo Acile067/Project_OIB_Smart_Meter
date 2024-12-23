@@ -50,9 +50,27 @@ namespace Service
             string secretKey = SecretKey.LoadKey(GetUserName() + ".txt");
             byte[] decriptedId= AES_Symm_Algorithm.DecryptData(secretKey, encryptedId);
             string meterId=DataConverter.BytesToString(decriptedId);
-            
-            //TO DO
-            return 0;
+            double ret = -1;
+            try
+            {
+                NetTcpBinding binding = new NetTcpBinding();
+                string adresa = "net.tcp://localhost:9998/LoadBalancer";
+
+                binding.Security.Mode = SecurityMode.Transport;
+                binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+                binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
+                ChannelFactory<ILoadBalancer> kanal = new ChannelFactory<ILoadBalancer>(binding, new EndpointAddress(adresa));
+                ILoadBalancer proksi = kanal.CreateChannel();
+
+                Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
+
+                ret = proksi.CalculateEnergyConsumption(meterId);
+                kanal.Close();
+            }
+            catch { Console.WriteLine("Greska!!"); }
+
+            return ret;
         }
 
 
@@ -62,7 +80,24 @@ namespace Service
             string id=DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
             double energyConsumed = DataConverter.BytesToDouble(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), newEnergyConsumed));
 
-            //TO DO
+            try
+            {
+                NetTcpBinding binding = new NetTcpBinding();
+                string adresa = "net.tcp://localhost:9998/LoadBalancer";
+
+                binding.Security.Mode = SecurityMode.Transport;
+                binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+                binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
+                ChannelFactory<ILoadBalancer> kanal = new ChannelFactory<ILoadBalancer>(binding, new EndpointAddress(adresa));
+                ILoadBalancer proksi = kanal.CreateChannel();
+
+                Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
+
+                proksi.UpdateEnergyConsumed(id, energyConsumed);
+                kanal.Close();
+            }
+            catch { Console.WriteLine("Greska!!"); }
             return true;
             
         }
@@ -74,7 +109,24 @@ namespace Service
             string id1 = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
             string id2 = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), newId));
 
-            //TO DO
+            try
+            {
+                NetTcpBinding binding = new NetTcpBinding();
+                string adresa = "net.tcp://localhost:9998/LoadBalancer";
+
+                binding.Security.Mode = SecurityMode.Transport;
+                binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+                binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
+                ChannelFactory<ILoadBalancer> kanal = new ChannelFactory<ILoadBalancer>(binding, new EndpointAddress(adresa));
+                ILoadBalancer proksi = kanal.CreateChannel();
+
+                Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
+
+                proksi.UpdateId(id1, id2);
+                kanal.Close();
+            }
+            catch { Console.WriteLine("Greska!!"); }
             return true;
         }
 
@@ -87,8 +139,25 @@ namespace Service
             double newEnergy = DataConverter.BytesToDouble(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), energy));
 
             SmartMeter meter=new SmartMeter(newId, newName, newEnergy, "");
-            
-            //TO DO
+
+            try
+            {
+                NetTcpBinding binding = new NetTcpBinding();
+                string adresa = "net.tcp://localhost:9998/LoadBalancer";
+
+                binding.Security.Mode = SecurityMode.Transport;
+                binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+                binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
+                ChannelFactory<ILoadBalancer> kanal = new ChannelFactory<ILoadBalancer>(binding, new EndpointAddress(adresa));
+                ILoadBalancer proksi = kanal.CreateChannel();
+
+                Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
+
+                proksi.AddSmartMeter(meter);
+                kanal.Close();
+            }
+            catch { Console.WriteLine("Greska!!"); }
             return true;
         }
 
@@ -98,7 +167,24 @@ namespace Service
         {
             string id = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
 
-            //TO DO
+            try
+            {
+                NetTcpBinding binding = new NetTcpBinding();
+                string adresa = "net.tcp://localhost:9998/LoadBalancer";
+
+                binding.Security.Mode = SecurityMode.Transport;
+                binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+                binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
+                ChannelFactory<ILoadBalancer> kanal = new ChannelFactory<ILoadBalancer>(binding, new EndpointAddress(adresa));
+                ILoadBalancer proksi = kanal.CreateChannel();
+
+                Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
+
+                proksi.DeleteSmartMeterById(id);
+                kanal.Close();
+            }
+            catch { Console.WriteLine("Greska!!"); }
             return true;
         }
 
@@ -106,7 +192,24 @@ namespace Service
         [PrincipalPermission(SecurityAction.Demand, Role = "DeleteDatabase")]
         public void DeleteDatabase()
         {
-            //TO DO
+            try
+            {
+                NetTcpBinding binding = new NetTcpBinding();
+                string adresa = "net.tcp://localhost:9998/LoadBalancer";
+
+                binding.Security.Mode = SecurityMode.Transport;
+                binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+                binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
+                ChannelFactory<ILoadBalancer> kanal = new ChannelFactory<ILoadBalancer>(binding, new EndpointAddress(adresa));
+                ILoadBalancer proksi = kanal.CreateChannel();
+
+                Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
+
+                proksi.DeleteDatabase();
+                kanal.Close();
+            }
+            catch { Console.WriteLine("Greska!!"); }
             return;
         }
 
@@ -114,7 +217,24 @@ namespace Service
         [PrincipalPermission(SecurityAction.Demand, Role = "ArchiveDatabase")]
         public void BackupDatabase()
         {
-            //TO DO
+            try
+            {
+                NetTcpBinding binding = new NetTcpBinding();
+                string adresa = "net.tcp://localhost:9998/LoadBalancer";
+
+                binding.Security.Mode = SecurityMode.Transport;
+                binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+                binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
+                ChannelFactory<ILoadBalancer> kanal = new ChannelFactory<ILoadBalancer>(binding, new EndpointAddress(adresa));
+                ILoadBalancer proksi = kanal.CreateChannel();
+
+                Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");
+
+                proksi.BackupDatabase();
+                kanal.Close();
+            }
+            catch { Console.WriteLine("Greska!!"); }
             return;
         }
 

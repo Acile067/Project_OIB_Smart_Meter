@@ -79,7 +79,7 @@ namespace LoadBalancer
         {
             try
             {
-                factory.BackupDatabase();
+                factory.DeleteDatabase();
             }
             catch (Exception e)
             {
