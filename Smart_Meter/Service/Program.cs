@@ -1,5 +1,6 @@
 ﻿using Common;
 using Manager.RBAC;
+using Manager.Audit;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Policy;
@@ -34,14 +35,20 @@ namespace Service
             policies.Add(new CustomAuthorizationPolicy());
             host.Authorization.ExternalAuthorizationPolicies = policies.AsReadOnly();
 
+            //Auditing
+            ServiceSecurityAuditBehavior newAudit = new ServiceSecurityAuditBehavior();
+            newAudit.AuditLogLocation = AuditLogLocation.Application;
+            newAudit.ServiceAuthorizationAuditLevel = AuditLevel.SuccessOrFailure;
+
+            host.Description.Behaviors.Remove<ServiceSecurityAuditBehavior>();
+            host.Description.Behaviors.Add(newAudit);
+
 
             host.Open();
 
             Console.WriteLine("User - MainService: " + WindowsIdentity.GetCurrent().Name);
 
             Console.WriteLine("MainService is running.");
-            
-            
 
             Console.ReadLine();
             host.Close();
