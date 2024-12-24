@@ -53,12 +53,13 @@ namespace Manager.Audit
             }
         }
 
-        public static string AuthorizationFailed
+        public static string AuthorizationFailure
         {
             get
             {
                 return ResourceMgr.GetString(AuditEventTypes.AuthorizationFailed.ToString());
             }
         }
+
     }
 }
