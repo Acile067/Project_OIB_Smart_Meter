@@ -67,8 +67,8 @@ namespace Manager.Audit
         {
             if (customLog != null)
             {
-                string AuthorizationFailed = AuditEvents.AuthorizationFailed;
-                string message = String.Format(AuthorizationFailed, userName, serviceName, reason);
+                string authorizationFailure = AuditEvents.AuthorizationFailure;
+                string message = String.Format(authorizationFailure, userName, serviceName, reason);
                 customLog.WriteEntry(message);
             }
             else
@@ -77,6 +77,7 @@ namespace Manager.Audit
                     (int)AuditEventTypes.AuthorizationFailed));
             }
         }
+
 
         public void Dispose()
         {

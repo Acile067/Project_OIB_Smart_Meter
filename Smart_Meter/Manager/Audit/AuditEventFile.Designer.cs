@@ -72,9 +72,9 @@ namespace Manager.Audit {
         /// <summary>
         ///   Looks up a localized string similar to User {0} failed to access {1}. Reason: {2}..
         /// </summary>
-        internal static string AuthorizationFailure {
+        internal static string AuthorizationFailed {
             get {
-                return ResourceManager.GetString("AuthorizationFailure", resourceCulture);
+                return ResourceManager.GetString("AuthorizationFailed", resourceCulture);
             }
         }
         
