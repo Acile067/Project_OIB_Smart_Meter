@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -101,15 +102,15 @@ namespace Worker
 
                 if (meter.EnergyConsumed < 200)
                 {
-                    meter.Zone = "Zelena";
+                    meter.Zone = "Green";
                 }
                 else if (meter.EnergyConsumed >= 200 && meter.EnergyConsumed <= 500)
                 {
-                    meter.Zone = "Plava";
+                    meter.Zone = "Blue";
                 }
                 else
                 {
-                    meter.Zone = "Crvena";
+                    meter.Zone = "Red";
                 }
 
 
@@ -145,16 +146,57 @@ namespace Worker
             }
         }
 
+        static double GreenZonePrice = Double.Parse(ConfigurationManager.AppSettings["GreenZonePrice"]);
+        static double BlueZonePrice = Double.Parse(ConfigurationManager.AppSettings["BlueZonePrice"]);
+        static double RedZonePrice = Double.Parse(ConfigurationManager.AppSettings["RedZonePrice"]);
+
         public double CalculateEnergyConsumption(string meterId)
         {
+            //lock (fileLock)
+            //{
+            //    string cleanMeterId = meterId.TrimEnd('\0');
+            //    Console.WriteLine($"[DEBUG] Calculating energy consumption for MeterId: '{cleanMeterId}'.");
+
+            //    return meters.TryGetValue(cleanMeterId, out var meter) ? meter.EnergyConsumed : 0.0;
+            //}
+
             lock (fileLock)
             {
                 string cleanMeterId = meterId.TrimEnd('\0');
-                Console.WriteLine($"[DEBUG] Calculating energy consumption for MeterId: '{cleanMeterId}'.");
+                Console.WriteLine($"[DEBUG] Calculating energy cost for MeterId: '{cleanMeterId}'.");
 
-                return meters.TryGetValue(cleanMeterId, out var meter) ? meter.EnergyConsumed : 0.0;
+                if (!meters.TryGetValue(cleanMeterId, out var meter))
+                {
+                    Console.WriteLine($"[ERROR] MeterId '{cleanMeterId}' not found.");
+                    return 0.0;
+                }
+
+                string zone = meter.Zone;
+                double zonePrice = 0.0;
+
+                if (zone.Equals("Green"))
+                {
+                    zonePrice =GreenZonePrice;
+                }
+                else if (zone.Equals("Blue"))
+                {
+                    zonePrice = BlueZonePrice;
+                }
+                else if (zone.Equals("Red"))
+                {
+                    zonePrice = RedZonePrice;
+                }
+
+
+
+                double cost = meter.EnergyConsumed * zonePrice;
+                Console.WriteLine($"[INFO] MeterId: '{cleanMeterId}', Zone: '{zone}', Energy Consumed: {meter.EnergyConsumed}, Cost: {cost}");
+                return cost;
             }
+
         }
+
+
 
         public void DeleteDatabase()
         {
@@ -209,17 +251,18 @@ namespace Worker
                 }
 
                 meters[cleanMeterId].EnergyConsumed = newEnergyConsumed;
+
                 if (newEnergyConsumed < 200)
                 {
-                    meters[cleanMeterId].Zone = "Zelena";
+                    meters[cleanMeterId].Zone = "Green";
                 }
                 else if (newEnergyConsumed >= 200 && newEnergyConsumed <= 500)
                 {
-                    meters[cleanMeterId].Zone = "Plava";
+                    meters[cleanMeterId].Zone = "Blue";
                 }
                 else
                 {
-                    meters[cleanMeterId].Zone = "Crvena";
+                    meters[cleanMeterId].Zone = "Red";
                 }
 
 
