@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 
 namespace Worker
 {
@@ -98,6 +99,21 @@ namespace Worker
                 meter.MeterId = meter.MeterId.TrimEnd('\0');
                 meter.OwnerName = meter.OwnerName.TrimEnd('\0');
 
+                if (meter.EnergyConsumed < 200)
+                {
+                    meter.Zone = "Zelena";
+                }
+                else if (meter.EnergyConsumed >= 200 && meter.EnergyConsumed <= 500)
+                {
+                    meter.Zone = "Plava";
+                }
+                else
+                {
+                    meter.Zone = "Crvena";
+                }
+
+
+
                 if (meters.ContainsKey(meter.MeterId))
                 {
                     Console.WriteLine($"[ERROR] MeterId '{meter.MeterId}' already exists in the database.");
@@ -107,6 +123,7 @@ namespace Worker
                 meters[meter.MeterId] = meter;
                 SaveDatabase();
                 Console.WriteLine($"[INFO] MeterId '{meter.MeterId}' successfully added to the database.");
+               
                 return true;
             }
         }
@@ -192,6 +209,20 @@ namespace Worker
                 }
 
                 meters[cleanMeterId].EnergyConsumed = newEnergyConsumed;
+                if (newEnergyConsumed < 200)
+                {
+                    meters[cleanMeterId].Zone = "Zelena";
+                }
+                else if (newEnergyConsumed >= 200 && newEnergyConsumed <= 500)
+                {
+                    meters[cleanMeterId].Zone = "Plava";
+                }
+                else
+                {
+                    meters[cleanMeterId].Zone = "Crvena";
+                }
+
+
                 SaveDatabase();
                 Console.WriteLine($"[INFO] Energy consumption for MeterId '{cleanMeterId}' successfully updated.");
                 return true;
