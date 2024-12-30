@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LoadBalancerProxy.cs" />
+    <Compile Include="LoadBalancerRegisterWorkerService.cs" />
     <Compile Include="LoadBalancerService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILoadBalancer.cs" />
+    <Compile Include="IRegisterToLoadBalancer.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="IWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

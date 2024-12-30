@@ -14,6 +14,9 @@ namespace Worker
         private static readonly string DatabaseFilePath = Path.Combine(DatabaseFolderPath, "smart_meters.json");
         private static readonly object fileLock = new object();
         private static Dictionary<string, SmartMeter> meters;
+        private static double GreenZonePrice = Double.Parse(ConfigurationManager.AppSettings["GreenZonePrice"]);
+        private static double BlueZonePrice = Double.Parse(ConfigurationManager.AppSettings["BlueZonePrice"]);
+        private static double RedZonePrice = Double.Parse(ConfigurationManager.AppSettings["RedZonePrice"]);
 
         // Staticki konstruktor
         static WorkerService()
@@ -92,9 +95,15 @@ namespace Worker
                 }
             }
         }
+        private void ReloadDatabase()
+        {
+            LoadDatabase();
+        }
+
 
         public bool AddSmartMeter(SmartMeter meter)
         {
+            ReloadDatabase();
             lock (fileLock)
             {
                 meter.MeterId = meter.MeterId.TrimEnd('\0');
@@ -112,8 +121,6 @@ namespace Worker
                 {
                     meter.Zone = "Red";
                 }
-
-
 
                 if (meters.ContainsKey(meter.MeterId))
                 {
@@ -146,20 +153,9 @@ namespace Worker
             }
         }
 
-        static double GreenZonePrice = Double.Parse(ConfigurationManager.AppSettings["GreenZonePrice"]);
-        static double BlueZonePrice = Double.Parse(ConfigurationManager.AppSettings["BlueZonePrice"]);
-        static double RedZonePrice = Double.Parse(ConfigurationManager.AppSettings["RedZonePrice"]);
-
         public double CalculateEnergyConsumption(string meterId)
         {
-            //lock (fileLock)
-            //{
-            //    string cleanMeterId = meterId.TrimEnd('\0');
-            //    Console.WriteLine($"[DEBUG] Calculating energy consumption for MeterId: '{cleanMeterId}'.");
-
-            //    return meters.TryGetValue(cleanMeterId, out var meter) ? meter.EnergyConsumed : 0.0;
-            //}
-
+            ReloadDatabase();
             lock (fileLock)
             {
                 string cleanMeterId = meterId.TrimEnd('\0');
@@ -186,20 +182,15 @@ namespace Worker
                 {
                     zonePrice = RedZonePrice;
                 }
-
-
-
                 double cost = meter.EnergyConsumed * zonePrice;
                 Console.WriteLine($"[INFO] MeterId: '{cleanMeterId}', Zone: '{zone}', Energy Consumed: {meter.EnergyConsumed}, Cost: {cost}");
                 return cost;
             }
-
         }
-
-
 
         public void DeleteDatabase()
         {
+            ReloadDatabase();
             lock (fileLock)
             {
                 if (File.Exists(DatabaseFilePath))
@@ -214,6 +205,7 @@ namespace Worker
 
         public bool DeleteSmartMeterById(string meterId)
         {
+            ReloadDatabase();
             lock (fileLock)
             {
                 string cleanMeterId = meterId.TrimEnd('\0');
@@ -239,6 +231,7 @@ namespace Worker
 
         public bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed)
         {
+            ReloadDatabase();
             lock (fileLock)
             {
                 string cleanMeterId = meterId.TrimEnd('\0');
@@ -265,7 +258,6 @@ namespace Worker
                     meters[cleanMeterId].Zone = "Red";
                 }
 
-
                 SaveDatabase();
                 Console.WriteLine($"[INFO] Energy consumption for MeterId '{cleanMeterId}' successfully updated.");
                 return true;
@@ -274,6 +266,7 @@ namespace Worker
 
         public bool UpdateId(string meterId, string newId)
         {
+            ReloadDatabase();
             lock (fileLock)
             {
                 string cleanMeterId = meterId.TrimEnd('\0');

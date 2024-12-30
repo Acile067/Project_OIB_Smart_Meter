@@ -25,12 +25,25 @@ namespace LoadBalancer
 
             host.Open();
 
+            NetTcpBinding binding2 = new NetTcpBinding();
+            string address2 = "net.tcp://localhost:9991/LoadBalancerRegisterWorkerService";
+
+            binding2.Security.Mode = SecurityMode.Transport;
+            binding2.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+            binding2.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+
+            ServiceHost host2 = new ServiceHost(typeof(LoadBalancerRegisterWorkerService));
+            host2.AddServiceEndpoint(typeof(IRegisterToLoadBalancer), binding2, address2);
+
+            host2.Open();
+
             Console.WriteLine("[INFO] User - Load Blancer :" + WindowsIdentity.GetCurrent().Name);
 
             Console.WriteLine("[INFO] Load Balancer is running.");
 
             Console.ReadLine();
             host.Close();
+            host2.Close();
         }
     }
 }

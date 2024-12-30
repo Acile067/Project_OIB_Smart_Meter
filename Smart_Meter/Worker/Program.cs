@@ -81,7 +81,7 @@ namespace Worker
         private static WorkerProxy CreateWorkerProxy()
         {
             NetTcpBinding binding = new NetTcpBinding();
-            string address = "net.tcp://localhost:9998/LoadBalancer";
+            string address = "net.tcp://localhost:9991/LoadBalancerRegisterWorkerService";
 
             binding.Security.Mode = SecurityMode.Transport;
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;

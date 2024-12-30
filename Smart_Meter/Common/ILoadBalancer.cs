@@ -13,10 +13,6 @@ namespace Common
         [OperationContract]
         void TestConnectionLoadBalancer();
         [OperationContract]
-        bool RegisterWorker(int port, string workerName);
-        [OperationContract]
-        bool RemoveWorker(int port);
-        [OperationContract]
         double CalculateEnergyConsumption(string meterId);
         [OperationContract]
         bool UpdateEnergyConsumed(string meterId, double newEnergyConsumed);

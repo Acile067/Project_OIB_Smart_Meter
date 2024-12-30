@@ -1,1 +1,20 @@
-{"87654321":{"MeterId":"87654321","OwnerName":"milan","EnergyConsumed":120,"Zone":"Green"},"12341234":{"MeterId":"12341234","OwnerName":"milos","EnergyConsumed":550,"Zone":"Red"},"12312312":{"MeterId":"12312312","OwnerName":"stefan","EnergyConsumed":230,"Zone":"Blue"}}
+{
+  "87654321": {
+    "MeterId": "87654321",
+    "OwnerName": "milan",
+    "EnergyConsumed": 120,
+    "Zone": "Green"
+  },
+  "12341234": {
+    "MeterId": "12341234",
+    "OwnerName": "milos",
+    "EnergyConsumed": 550,
+    "Zone": "Red"
+  },
+  "12312312": {
+    "MeterId": "12312312",
+    "OwnerName": "stefan",
+    "EnergyConsumed": 230,
+    "Zone": "Blue"
+  }
+}
