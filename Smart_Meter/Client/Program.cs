@@ -96,12 +96,10 @@ namespace Client
 
                         case 6:
                             proxy.DeleteDatabase();
-                            Console.WriteLine("Database deleted successfully.");
                             break;
 
                         case 7:
                             proxy.BackupDatabase();
-                            Console.WriteLine("Database backed up successfully.");
                             break;
 
                         default:

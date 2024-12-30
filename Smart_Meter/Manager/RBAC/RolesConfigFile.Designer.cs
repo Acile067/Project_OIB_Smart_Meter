@@ -61,7 +61,7 @@ namespace Manager.RBAC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EnergyCalculation,AddEntity,DeleteEntity.
+        ///   Looks up a localized string similar to CalculateEnergyConsumption,AddSmartMeter,DeleteSmartMeterById.
         /// </summary>
         internal static string Admin {
             get {
@@ -70,7 +70,7 @@ namespace Manager.RBAC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EnergyCalculation,ModifyEnergy,ModifyId.
+        ///   Looks up a localized string similar to CalculateEnergyConsumption,UpdateEnergyConsumed,UpdateId.
         /// </summary>
         internal static string Operator {
             get {
@@ -79,7 +79,7 @@ namespace Manager.RBAC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EnergyCalculation,DeleteDatabase,ArchiveDatabase.
+        ///   Looks up a localized string similar to CalculateEnergyConsumption,DeleteDatabase,BackupDatabase.
         /// </summary>
         internal static string Super_administrator {
             get {
@@ -88,7 +88,7 @@ namespace Manager.RBAC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EnergyCalculation.
+        ///   Looks up a localized string similar to CalculateEnergyConsumption.
         /// </summary>
         internal static string User {
             get {

@@ -81,11 +81,7 @@ namespace Service
 
                 Console.WriteLine("\nZahtev je prosledjen balanseru opterecenja.");           
 
-                ret = proksi.CalculateEnergyConsumption(meterId);
-
-                //Console.WriteLine("Calculate energy consumption successfully executed.");
-
-                
+                ret = proksi.CalculateEnergyConsumption(meterId);               
 
                 kanal.Close();
             }
@@ -102,9 +98,8 @@ namespace Service
             CustomPrincipal principal = Thread.CurrentPrincipal as CustomPrincipal;
             string userName = Formatter.ParseName(principal.Identity.Name);
 
-            if (Thread.CurrentPrincipal.IsInRole("ModifyEnergy"))
+            if (Thread.CurrentPrincipal.IsInRole("UpdateEnergyConsumed"))
             {
-                //Console.WriteLine("UpdateEnergyConsumed successfully executed.");
 
                 try
                 {
@@ -116,22 +111,7 @@ namespace Service
                     Console.WriteLine(e.Message);
                 }
 
-            }
-            else
-            {
-                try
-                {
-                    Audit.AuthorizationFailed(userName,
-                        OperationContext.Current.IncomingMessageHeaders.Action, "UpdateEnergyConsumed method needs ModifyEnergy permission.");
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-                throw new FaultException("User " + userName +
-                    " try to call UpdateEnergyConsumed method. UpdateEnergyConsumed method needs ModifyEnergy permission.");
-            }
+            }            
 
             string id=DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
             double energyConsumed = DataConverter.BytesToDouble(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), newEnergyConsumed));
@@ -166,19 +146,8 @@ namespace Service
         {
             CustomPrincipal principal = Thread.CurrentPrincipal as CustomPrincipal;
             string userName = Formatter.ParseName(principal.Identity.Name);
-
-            /*Console.WriteLine($"User {userName} attempting to call UpdateId");
-            Console.WriteLine("Authorization success: " + AuditEvents.AuthorizationSuccess);
-            Console.WriteLine("Authorization failed: " + AuditEvents.AuthorizationFailure);
-            Console.WriteLine("Auth success: " + AuditEvents.AuthenticationSuccess);
-            string prefix = "http://tempuri.org/IService/";
-            string operationName = OperationContext.Current.IncomingMessageHeaders.Action;
-            // Find the start index after the prefix
-            int startIndex = prefix.Length;
-            string operation = operationName.Substring(startIndex);
-            Console.WriteLine(operation);*/
-            bool isInRole = Thread.CurrentPrincipal.IsInRole("ModifyId");
-            Console.WriteLine($"User is in ModifyId role: {isInRole}");
+           
+            bool isInRole = Thread.CurrentPrincipal.IsInRole("UpdateId");
 
             if (isInRole)
             {
@@ -190,27 +159,8 @@ namespace Service
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error logging authorization success: {e.Message}");
+                    Console.WriteLine(e.Message);
                 }
-            }
-            else
-            {
-                try
-                {
-                    Audit.AuthorizationFailed(userName,
-                        OperationContext.Current.IncomingMessageHeaders.Action, "UpdateId method needs ModifyId permission.");
-                    Console.WriteLine("Authorization failure logged");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Username: " + userName);
-                    
-                    Console.WriteLine("Authorization failure message: " + AuditEvents.AuthorizationFailure);
-                    Console.WriteLine($"Error logging authorization failure: {e.Message}");
-                }
-
-                throw new FaultException("User " + userName +
-                    " tried to call UpdateId method. UpdateId method needs ModifyId permission.");
             }
 
             string id1 = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
@@ -249,17 +199,10 @@ namespace Service
         public bool AddSmartMeter(byte[] id, byte[] name, byte[] energy)
         {
             CustomPrincipal principal = Thread.CurrentPrincipal as CustomPrincipal;
-            string userName = Formatter.ParseName(principal.Identity.Name);
-            /*string prefix = "http://tempuri.org/IService/";
-            string operationName = OperationContext.Current.IncomingMessageHeaders.Action;
-            // Find the start index after the prefix
-            int startIndex = prefix.Length;
-            string operation = operationName.Substring(startIndex);
-            Console.WriteLine(operation);*/
+            string userName = Formatter.ParseName(principal.Identity.Name);           
 
-            if (Thread.CurrentPrincipal.IsInRole("AddEntity"))
+            if (Thread.CurrentPrincipal.IsInRole("AddSmartMeter"))
             {
-                Console.WriteLine("User is in AddEntity mode");
                 try
                 {
                     Audit.AuthorizationSuccess(userName,
@@ -270,24 +213,7 @@ namespace Service
                     Console.WriteLine(e.Message);
                 }
 
-            }
-            else
-            {
-                Console.WriteLine("User is NOT in AddEntity mode");
-                try
-                {
-                    Audit.AuthorizationFailed(userName,
-                        OperationContext.Current.IncomingMessageHeaders.Action, "AddSmartMeter method needs AddEntity permission.");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
-                throw new FaultException("User " + userName +
-                    " try to call AddSmartMeter method. AddSmartMeter method needs AddEntity permission.");
-            }
-
+            }            
 
             string newId = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), id));
             string newName = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), name));
@@ -328,10 +254,8 @@ namespace Service
             CustomPrincipal principal = Thread.CurrentPrincipal as CustomPrincipal;
             string userName = Formatter.ParseName(principal.Identity.Name);
 
-            if (Thread.CurrentPrincipal.IsInRole("DeleteEntity"))
+            if (Thread.CurrentPrincipal.IsInRole("DeleteSmartMeterById"))
             {
-                //Console.WriteLine("DeleteSmartMeterById successfully executed.");
-
                 try
                 {
                     Audit.AuthorizationSuccess(userName,
@@ -342,22 +266,7 @@ namespace Service
                     Console.WriteLine(e.Message);
                 }
 
-            }
-            else
-            {
-                try
-                {
-                    Audit.AuthorizationFailed(userName,
-                        OperationContext.Current.IncomingMessageHeaders.Action, "DeleteSmartMeterById method needs DeleteEntity permission.");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
-                throw new FaultException("User " + userName +
-                    " try to call DeleteSmartMeterById method. DeleteSmartMeterById method needs DeleteEntity permission.");
-            }
+            }            
 
             string id = DataConverter.BytesToString(AES_Symm_Algorithm.DecryptData(SecretKey.LoadKey(GetUserName() + ".txt"), meterId));
 
@@ -393,8 +302,6 @@ namespace Service
 
             if (Thread.CurrentPrincipal.IsInRole("DeleteDatabase"))
             {
-                //Console.WriteLine("DeleteDatabase successfully executed.");
-
                 try
                 {
                     Audit.AuthorizationSuccess(userName,
@@ -406,21 +313,7 @@ namespace Service
                 }
 
             }
-            else
-            {
-                try
-                {
-                    Audit.AuthorizationFailed(userName,
-                        OperationContext.Current.IncomingMessageHeaders.Action, "DeleteDatabase method needs DeleteDatabase permission.");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
-                throw new FaultException("User " + userName +
-                    " try to call DeleteDatabase method. DeleteDatabase method needs DeleteDatabase permission.");
-            }
+            
             try
             {
                 NetTcpBinding binding = new NetTcpBinding();
@@ -450,7 +343,7 @@ namespace Service
             CustomPrincipal principal = Thread.CurrentPrincipal as CustomPrincipal;
             string userName = Formatter.ParseName(principal.Identity.Name);
 
-            if (Thread.CurrentPrincipal.IsInRole("ArchiveDatabase"))
+            if (Thread.CurrentPrincipal.IsInRole("BackupDatabase"))
             {
 
                 try
@@ -464,21 +357,7 @@ namespace Service
                 }
 
             }
-            else
-            {
-                try
-                {
-                    Audit.AuthorizationFailed(userName,
-                        OperationContext.Current.IncomingMessageHeaders.Action, "BackupDatabase method needs ArchiveDatabase permission.");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
-                throw new FaultException("User " + userName +
-                    " try to call BackupDatabase method. BackupDatabase method needs ArchiveDatabase permission.");
-            }
+            
             try
             {
                 NetTcpBinding binding = new NetTcpBinding();

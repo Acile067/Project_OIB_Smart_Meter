@@ -39,10 +39,10 @@ namespace Client
             try
             {
                 energyConsumption = factory.CalculateEnergyConsumption(encryptedId);
-                Console.WriteLine("CalculateEnergyConsuption allowed!");
+                Console.WriteLine("[INFO] Energy calculated successfully!");
             }catch(Exception e)
             {
-                Console.WriteLine("Error while trying to CalculateEnergyConsumption : {0}", e.Message);
+                Console.WriteLine("Error while trying to calculate energy : {0}", e.Message + "Not authorized to execute this command.");
             }
             return energyConsumption; //vrati rezultat
         }
@@ -52,12 +52,12 @@ namespace Client
             bool updated = false;
             try
             {
-                updated = factory.UpdateEnergyConsumed(meterId, newEnergyConsumed);  
-                Console.WriteLine("UpdateEnergyConsumed allowed!");
+                updated = factory.UpdateEnergyConsumed(meterId, newEnergyConsumed);
+                Console.WriteLine("[INFO] Energy updated successfully!");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error while trying to UpdateEnergyConsumed : {0}", e.Message);
+                Console.WriteLine("Error while trying to update energy : {0}", e.Message + "Not authorized to execute this command.");
             }
             return updated;
         }
@@ -69,11 +69,11 @@ namespace Client
             try
             {
                 updated = factory.UpdateId(meterId, newId);
-                Console.WriteLine("UpdateId allowed!");
+                Console.WriteLine("[INFO] Smart Meter ID updated successfully!");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error while trying to UpdateId : {0}", e.Message);
+                Console.WriteLine("Error while trying to UpdateId : {0}", e.Message + "Not authorized to execute this command.");
             }
             return updated; 
         }
@@ -84,11 +84,11 @@ namespace Client
             try
             {
                 added = factory.AddSmartMeter(id, name, energy);
-                Console.WriteLine("AddSmartMeter allowed!");
+                Console.WriteLine("[INFO] SmartMeter added successfully!");
             }
             catch(Exception e)
             {
-                Console.WriteLine("Error while trying to AddSmartMeter : {0}", e.Message);
+                Console.WriteLine("Error while trying to add SmartMeter : {0}", e.Message + "Not authorized to execute this command.");
             }
             return added;
         }
@@ -98,11 +98,11 @@ namespace Client
             try
             {
                 deleted = factory.DeleteSmartMeterById(meterId);
-                Console.WriteLine("DeleteSmartMeterById allowed!");
+                Console.WriteLine("[INFO] SmartMeter deleted successfully!");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error while trying to DeleteSmartMeterById : {0}", e.Message);
+                Console.WriteLine("Error while trying to delete smart meter : {0}", e.Message + "Not authorized to execute this command.");
             }
             return deleted;
         }
@@ -112,11 +112,11 @@ namespace Client
             try
             {
                 factory.DeleteDatabase();
-                Console.WriteLine("DeleteDatabase allowed!");
+                Console.WriteLine("[INFO] Database deleted successfully!");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error while trying to DeleteDatabase : {0}", e.Message);
+                Console.WriteLine("Error while trying to delete database : {0}", e.Message + "Not authorized to execute this command.");
             }
         }
 
@@ -125,11 +125,11 @@ namespace Client
             try
             {
                 factory.BackupDatabase();
-                Console.WriteLine("BackupDatabase allowed!");
+                Console.WriteLine("[INFO] Database backed up successfully!");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error while trying to BackupDatabase : {0}", e.Message);
+                Console.WriteLine("Error while trying to backup database : {0}", e.Message + "Not authorized to execute this command.");
             }
         }
 
