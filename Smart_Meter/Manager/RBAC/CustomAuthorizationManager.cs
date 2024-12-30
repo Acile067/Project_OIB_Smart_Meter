@@ -32,7 +32,7 @@ namespace Manager.RBAC
                 try
                 {
                     Audit.Audit.AuthorizationFailed(userName,
-                        OperationContext.Current.IncomingMessageHeaders.Action, operation + "method needs" + operation + "permission.");
+                        OperationContext.Current.IncomingMessageHeaders.Action, operation + " needs " + operation + " permission.");
                 }
                 catch (Exception e)
                 {
